@@ -149,25 +149,54 @@ exifremover/
 
 - **Backend** : PHP 7.4+
 - **Frontend** : HTML5, CSS3, JavaScript (Vanilla)
-- **Traitement d'images** : GD Library
+- **Traitement d'images** : Manipulation binaire (préserve la qualité 100%)
 - **Design** : CSS moderne avec animations
+
+## Qualité des Images
+
+L'application utilise une approche de **manipulation binaire** pour supprimer les métadonnées :
+- ✅ **Aucun réencodage** de l'image
+- ✅ **Qualité préservée à 100%**
+- ✅ Seules les métadonnées sont modifiées
+- ✅ Les données image restent intactes
+
+### Comment ça fonctionne ?
+
+Au lieu de décoder et réencoder l'image (ce qui cause une perte de qualité), l'application :
+1. Lit le fichier au niveau binaire
+2. Identifie et supprime les segments/chunks de métadonnées
+3. Réécrit le fichier sans toucher aux données image
+
+#### JPEG
+- Supprime les segments APP (APP1/EXIF, APP2/ICC, APP13/IPTC, etc.)
+- Préserve le segment JFIF (APP0) pour la compatibilité
+- Conserve les données image compressées intactes
+
+#### PNG
+- Supprime les chunks de métadonnées (tEXt, iTXt, zTXt, eXIf, tIME, etc.)
+- Préserve les chunks critiques (IHDR, PLTE, IDAT, IEND)
+- Maintient la transparence et les profils colorimétriques
+
+#### WebP
+- Supprime les chunks EXIF et XMP
+- Préserve les données VP8/VP8L intactes
 
 ## Limitations
 
 - Maximum 50 images par lot
 - Taille maximale : 10MB par image
 - Les images sont automatiquement supprimées après 1 heure
-- Le mode "Nettoyage AI" utilise actuellement le même algorithme que le mode complet (nécessite exiftool pour une implémentation complète)
+- Le mode "Nettoyage AI" détecte et supprime les métadonnées contenant des mots-clés AI (C2PA, DALL-E, Midjourney, etc.)
 
 ## Améliorations Futures
 
-- [ ] Intégration d'exiftool pour un nettoyage AI précis
-- [ ] Support des fichiers RAW
-- [ ] Téléchargement en ZIP
-- [ ] Comparaison avant/après des métadonnées
-- [ ] API REST
-- [ ] Authentification utilisateur
+- [ ] Support des fichiers RAW (CR2, NEF, ARW, etc.)
+- [ ] Téléchargement en ZIP pour toutes les images nettoyées
+- [ ] Comparaison avant/après des métadonnées avec interface visuelle
+- [ ] API REST pour intégration avec d'autres services
+- [ ] Authentification utilisateur et comptes
 - [ ] Historique des traitements
+- [ ] Support de formats additionnels (TIFF, BMP, etc.)
 
 ## Licence
 

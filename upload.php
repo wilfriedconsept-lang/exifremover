@@ -1,6 +1,9 @@
 <?php
 header('Content-Type: application/json');
 
+// Load ImageCleaner class
+require_once __DIR__ . '/ImageCleaner.php';
+
 // Configuration
 define('UPLOAD_DIR', __DIR__ . '/uploads/');
 define('CLEANED_DIR', __DIR__ . '/cleaned/');
@@ -38,98 +41,12 @@ function validateImage($file) {
     return ['valid' => true];
 }
 
-function cleanImageAI($sourcePath, $destPath, $mimeType) {
-    // For AI mode: recreate image to strip AI-specific metadata
-    // while trying to preserve camera EXIF
-
-    // Read original EXIF data
-    $exifData = null;
-    if ($mimeType === 'image/jpeg') {
-        $exifData = @exif_read_data($sourcePath);
-    }
-
-    // Create new image without metadata
-    $image = null;
-    switch ($mimeType) {
-        case 'image/jpeg':
-            $image = imagecreatefromjpeg($sourcePath);
-            break;
-        case 'image/png':
-            $image = imagecreatefrompng($sourcePath);
-            break;
-        case 'image/webp':
-            $image = imagecreatefromwebp($sourcePath);
-            break;
-    }
-
-    if (!$image) {
-        return false;
-    }
-
-    // Save with high quality
-    $result = false;
-    switch ($mimeType) {
-        case 'image/jpeg':
-            $result = imagejpeg($image, $destPath, 95);
-            break;
-        case 'image/png':
-            imagealphablending($image, false);
-            imagesavealpha($image, true);
-            $result = imagepng($image, $destPath, 9);
-            break;
-        case 'image/webp':
-            $result = imagewebp($image, $destPath, 95);
-            break;
-    }
-
-    imagedestroy($image);
-
-    // For AI mode, we use exiftool if available to preserve camera EXIF
-    // while removing AI tags. For now, this creates a clean image.
-    // In production, you'd want to use exiftool or a similar library
-    // to selectively remove AI-specific tags.
-
-    return $result;
-}
-
-function cleanImageFull($sourcePath, $destPath, $mimeType) {
-    // Full mode: completely strip all metadata
-
-    $image = null;
-    switch ($mimeType) {
-        case 'image/jpeg':
-            $image = imagecreatefromjpeg($sourcePath);
-            break;
-        case 'image/png':
-            $image = imagecreatefrompng($sourcePath);
-            break;
-        case 'image/webp':
-            $image = imagecreatefromwebp($sourcePath);
-            break;
-    }
-
-    if (!$image) {
-        return false;
-    }
-
-    // Save without any metadata
-    $result = false;
-    switch ($mimeType) {
-        case 'image/jpeg':
-            $result = imagejpeg($image, $destPath, 95);
-            break;
-        case 'image/png':
-            imagealphablending($image, false);
-            imagesavealpha($image, true);
-            $result = imagepng($image, $destPath, 9);
-            break;
-        case 'image/webp':
-            $result = imagewebp($image, $destPath, 95);
-            break;
-    }
-
-    imagedestroy($image);
-    return $result;
+/**
+ * Clean image metadata without re-encoding
+ * Uses binary manipulation to preserve image quality
+ */
+function cleanImage($sourcePath, $destPath, $mimeType, $mode) {
+    return ImageCleaner::clean($sourcePath, $destPath, $mimeType, $mode);
 }
 
 // Main processing
@@ -177,13 +94,8 @@ for ($i = 0; $i < $fileCount; $i++) {
         continue;
     }
 
-    // Clean based on mode
-    $success = false;
-    if ($mode === 'ai') {
-        $success = cleanImageAI($uploadPath, $cleanedPath, $file['type']);
-    } else {
-        $success = cleanImageFull($uploadPath, $cleanedPath, $file['type']);
-    }
+    // Clean image using binary manipulation (preserves quality)
+    $success = cleanImage($uploadPath, $cleanedPath, $file['type'], $mode);
 
     if ($success) {
         $processedImages[] = [
