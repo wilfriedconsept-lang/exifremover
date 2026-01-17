@@ -1,0 +1,442 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary: #6366f1;
+    --primary-dark: #4f46e5;
+    --secondary: #8b5cf6;
+    --success: #10b981;
+    --danger: #ef4444;
+    --dark: #0f172a;
+    --dark-light: #1e293b;
+    --gray: #64748b;
+    --light: #f1f5f9;
+    --border-radius: 16px;
+    --shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 2rem;
+    color: var(--dark);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 3rem;
+    animation: fadeInDown 0.6s ease;
+}
+
+header h1 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    font-size: 3rem;
+    color: white;
+    margin-bottom: 0.5rem;
+}
+
+.logo-icon {
+    width: 48px;
+    height: 48px;
+    color: white;
+}
+
+.subtitle {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.2rem;
+}
+
+.upload-section {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    box-shadow: var(--shadow-lg);
+    margin-bottom: 2rem;
+    animation: fadeInUp 0.6s ease;
+}
+
+.mode-selector {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.mode-option {
+    cursor: pointer;
+}
+
+.mode-option input[type="radio"] {
+    display: none;
+}
+
+.mode-card {
+    background: var(--light);
+    border: 3px solid transparent;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.mode-option input[type="radio"]:checked + .mode-card {
+    border-color: var(--primary);
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.2);
+}
+
+.mode-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.mode-card h3 {
+    color: var(--dark);
+    margin-bottom: 0.5rem;
+    font-size: 1.25rem;
+}
+
+.mode-card p {
+    color: var(--gray);
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.drop-zone {
+    border: 3px dashed var(--gray);
+    border-radius: var(--border-radius);
+    padding: 3rem 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: var(--light);
+}
+
+.drop-zone:hover,
+.drop-zone.drag-over {
+    border-color: var(--primary);
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.05));
+    transform: scale(1.02);
+}
+
+.upload-icon {
+    width: 64px;
+    height: 64px;
+    color: var(--primary);
+    margin-bottom: 1rem;
+}
+
+.drop-zone h2 {
+    color: var(--dark);
+    margin-bottom: 0.5rem;
+}
+
+.drop-zone p {
+    color: var(--gray);
+    margin-bottom: 0.5rem;
+}
+
+.file-info {
+    font-size: 0.85rem;
+    color: var(--gray);
+}
+
+.preview-section {
+    margin-top: 2rem;
+    animation: fadeIn 0.4s ease;
+}
+
+.preview-section h3 {
+    margin-bottom: 1rem;
+    color: var(--dark);
+}
+
+.preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.preview-item {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--light);
+}
+
+.preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.preview-item .remove-btn {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: var(--danger);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.preview-item:hover .remove-btn {
+    opacity: 1;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: var(--border-radius);
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+}
+
+.btn-primary svg {
+    width: 24px;
+    height: 24px;
+}
+
+.results-section {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    box-shadow: var(--shadow-lg);
+    animation: fadeInUp 0.6s ease;
+}
+
+.results-section h2 {
+    margin-bottom: 1.5rem;
+    color: var(--dark);
+    text-align: center;
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.gallery-item {
+    position: relative;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    background: white;
+    border: 4px solid var(--success);
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+    transition: all 0.3s ease;
+    animation: scaleIn 0.4s ease;
+}
+
+.gallery-item:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(16, 185, 129, 0.3);
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.gallery-item .download-btn {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+    color: white;
+    border: none;
+    padding: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    font-weight: 600;
+}
+
+.gallery-item:hover .download-btn {
+    opacity: 1;
+}
+
+.gallery-item .download-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+.download-all-container {
+    text-align: center;
+}
+
+.btn-download-all {
+    background: linear-gradient(135deg, var(--success), #059669);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: var(--border-radius);
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.btn-download-all:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+}
+
+.btn-download-all svg {
+    width: 24px;
+    height: 24px;
+}
+
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.loading-spinner {
+    text-align: center;
+    color: white;
+}
+
+.spinner {
+    width: 60px;
+    height: 60px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+}
+
+.loading-progress {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 1rem;
+    }
+
+    header h1 {
+        font-size: 2rem;
+    }
+
+    .mode-selector {
+        grid-template-columns: 1fr;
+    }
+
+    .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+
+    .upload-section,
+    .results-section {
+        padding: 1.5rem;
+    }
+}

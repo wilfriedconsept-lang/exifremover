@@ -1,0 +1,39 @@
+# Enable rewrite engine
+RewriteEngine On
+
+# Disable directory browsing
+Options -Indexes
+
+# Protect sensitive directories
+<FilesMatch "\.(htaccess|htpasswd|ini|log|sh|sql)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Set default index
+DirectoryIndex index.php
+
+# PHP settings
+php_flag display_errors Off
+php_flag log_errors On
+php_value upload_max_filesize 10M
+php_value post_max_size 100M
+php_value max_execution_time 300
+php_value memory_limit 256M
+
+# Security headers
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+</IfModule>
+
+# Cache static files
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/webp "access plus 1 month"
+    ExpiresByType text/css "access plus 1 week"
+    ExpiresByType application/javascript "access plus 1 week"
+</IfModule>
